@@ -17,11 +17,13 @@ This directory contains the results of testing MCP tools against real country pa
 - All MCP tools work without modification
 - 14 compatibility tests passing
 
-### openfisca-aotearoa: Version Skew
+### openfisca-aotearoa: Compatible
 
-- Requires openfisca-core <42 (we have 44.x)
-- Cannot test until package is updated
-- Unique features: WEEK periods, property entities, ACC rules
+- 5-entity model with property entities (tenancy, ownership, titled_property)
+- ~326 variables, ~58 parameters
+- DAY period for age (vs MONTH in France)
+- 17 compatibility tests passing
+- Required: patch `pyproject.toml` to allow core `>=41.4.5, <45`
 
 ## Conclusion
 
@@ -29,5 +31,6 @@ The MCP tools **generalize correctly** to complex country packages because they:
 - Use dynamic entity/variable discovery
 - Don't hardcode country-specific names
 - Work through the standard OpenFisca API
+- Handle different period types (DAY, WEEK, MONTH, YEAR)
 
-The only barrier is **core version compatibility**, which is a package maintainer responsibility.
+Both France and Aotearoa work with core 44.x after dependency constraint updates.

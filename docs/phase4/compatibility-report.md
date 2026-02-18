@@ -6,7 +6,7 @@
 |---------|--------------|----------|-----------|------------|----------------|
 | country-template | >=43 | 2 | 19 | ~20 | Yes (baseline) |
 | openfisca-france | >=43, <45 | 4 | ~2,776 | ~3,958 | **Yes** |
-| openfisca-aotearoa | <42 | 5 | ~326 | ~58 | **No** (version skew) |
+| openfisca-aotearoa | >=41.4.5, <45 | 5 | ~326 | ~58 | **Yes** |
 
 ## openfisca-france
 
@@ -65,46 +65,66 @@ France situations require all 4 entities:
 
 ## openfisca-aotearoa
 
-### Status: Not Compatible (Version Skew)
+### Status: Compatible
 
-**Critical Issue**: Package requires `openfisca-core <42` but we have version 44.x
+All 17 compatibility tests pass. The package works with openfisca-core 44.x after updating the dependency constraint.
+
+**Fix applied**: Changed `openfisca-core <42` to `>=41.4.5, <45` in `pyproject.toml`.
 
 ### Entity Model
 
 Aotearoa defines 5 entities:
 
-| Entity | Roles |
-|--------|-------|
-| Person | (none - person entity) |
-| Family | principal (max 1), partner, parent, child, other |
-| Tenancy | principal, tenant, other |
-| Ownership | principal, owner, other |
-| Titled_Property | owner, other |
+| Entity | Plural | Roles |
+|--------|--------|-------|
+| person | persons | (none - person entity) |
+| family | families | principal (max 1), partner, parent, child, other |
+| tenancy | tenancies | principal (max 1), tenant, other |
+| ownership | ownerships | principal (max 1), owner, other |
+| titled_property | titled_properties | owner, other |
 
 ### Unique Characteristics
 
-1. **Property entities**: Tenancy, Ownership, Titled_Property are unusual
-2. **WEEK periods**: 226+ variables use WEEK definition period
-3. **NZ-specific rules**: ACC (Accident Compensation), immigration rules
-4. **Extensive discretionary rules**: Many "not coded" placeholders
+1. **Property entities**: Tenancy, Ownership, Titled_Property are unusual group entities for property modeling
+2. **DAY periods**: Age variable uses DAY definition period (unlike France's MONTH)
+3. **WEEK periods**: Many benefit variables use WEEK definition period
+4. **NZ-specific rules**: ACC (Accident Compensation), immigration rules
+5. **Minimal situations**: Only required entities need to be included (e.g., just persons + families)
 
-### Required Migration
+### Key Differences from France
 
-To make Aotearoa compatible:
+| Aspect | France | Aotearoa |
+|--------|--------|----------|
+| Age period | MONTH (`2024-01`) | DAY (`2024-06-15`) |
+| Entity count | 4 (individu, famille, foyer_fiscal, menage) | 5 (person, family, tenancy, ownership, titled_property) |
+| Required entities | All 4 must be present | Only needed entities |
+| Role format | Singular key with list (`"declarants": ["p1"]`) | Singular for max=1 (`"principal": "p1"`) |
 
-1. **Update core dependency**: Migrate from `openfisca-core <42` to `>=43`
-2. **Fix period imports**: Standardize `periods.DateUnit.WEEK` vs `periods.WEEK`
-3. **Review API changes**: Check `set_input_dispatch_by_period` compatibility
-4. **Test formula routing**: Verify date-versioned formulas work
+### Situation Structure
 
-### API Differences (41.x → 44.x)
+Aotearoa situations can be minimal:
 
-| Area | Potential Change |
-|------|------------------|
-| Period enums | `periods.WEEK` → `periods.DateUnit.WEEK` |
-| Holder methods | `set_input_dispatch_by_period` signature |
-| Variable class | Formula registration |
-| TaxBenefitSystem | Initialization |
+```json
+{
+  "persons": {
+    "person1": {
+      "date_of_birth": {"ETERNITY": "1990-01-01"},
+      "age": {"2024-06-15": null}
+    }
+  },
+  "families": {
+    "family1": {
+      "principal": "person1"
+    }
+  }
+}
+```
+
+### Verified Calculations
+
+- Age calculation with DAY periods
+- Family structures with principal and partners
+- Tracing with dependency information
 
 ## MCP Tool Compatibility Notes
 
@@ -146,13 +166,17 @@ The MCP tools generalize without modification because:
 ### openfisca-france
 - 14 compatibility tests passing
 - Entities, variables, parameters, calculate, trace all verified
+- Run with: `poetry run openfisca serve -c openfisca_france -p 5051 &`
 
 ### openfisca-aotearoa
-- Not tested (incompatible core version)
-- Would require package update before testing
+- 17 compatibility tests passing
+- 5-entity model fully supported
+- DAY period handling verified
+- Run with: `poetry run openfisca serve -c openfisca_aotearoa -p 5052 &`
 
 ## Files
 
-- `tests/test_france_compatibility.py` - France test suite
+- `tests/test_france_compatibility.py` - France test suite (14 tests)
+- `tests/test_aotearoa_compatibility.py` - Aotearoa test suite (17 tests)
 - `country-packages/openfisca-france/` - Cloned France package
-- `country-packages/openfisca-aotearoa/` - Cloned Aotearoa package (incompatible)
+- `country-packages/openfisca-aotearoa/` - Cloned Aotearoa package (patched for core 44.x)

@@ -10,6 +10,7 @@ packages = [{include = "openfisca_mcp", from = "src"}]
 python = "^3.10"
 openfisca-country-template = "^8.0.1"
 mcp = "^1.26.0"
+openfisca-france = "^175.0.15"
 
 [tool.poetry.group.dev.dependencies]
 pytest = ">=8.3.3,<9.0"

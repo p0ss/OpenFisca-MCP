@@ -1,0 +1,27 @@
+{
+  "persons": {
+    "parent1": {
+      "birth": {"ETERNITY": "1980-05-12"},
+      "salary": {"2024-01": 5000}
+    },
+    "parent2": {
+      "birth": {"ETERNITY": "1982-09-25"},
+      "salary": {"2024-01": 3000}
+    },
+    "child1": {
+      "birth": {"ETERNITY": "2010-02-14"},
+      "salary": {"2024-01": 0}
+    },
+    "child2": {
+      "birth": {"ETERNITY": "2015-11-30"},
+      "salary": {"2024-01": 0}
+    }
+  },
+  "households": {
+    "household1": {
+      "adults": ["parent1", "parent2"],
+      "children": ["child1", "child2"],
+      "rent": {"2024-01": 1500}
+    }
+  }
+}

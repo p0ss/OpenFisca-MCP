@@ -1,0 +1,25 @@
+{
+  "request": null,
+  "response": {
+    "household": {
+      "description": "All the people in a family or group who live together in the same place.",
+      "documentation": "Household is an example of a group entity.\nA group entity contains one or more individuals.\nEach individual in a group entity has a role (e.g. parent or children).\nSome roles can only be held by a limited number of individuals (e.g. a\n'first_parent' can only be held by one individual), while others can\nhave an unlimited number of individuals (e.g. 'children').\n\nExample:\n    Housing variables (e.g. housing_tax') are usually defined for a group\n    entity such as 'Household'.\n\nUsage:\n    Check the number of individuals of a specific role (e.g. check if there\n    is an 'adult' with household.nb_persons(Household.ADULT)).\n    Calculate a variable applied to each individual of the group entity\n    (e.g. calculate the 'salary' of each member of the 'Household' with:\n        salaries = household.members(\"salary\", period = MONTH)\n        sum_salaries = household.sum(salaries)).\n\nFor more information, see: https://openfisca.org/doc/coding-the-legislation/50_entities.html",
+      "plural": "households",
+      "roles": {
+        "adult": {
+          "description": "The adults of the household.",
+          "plural": "adults"
+        },
+        "child": {
+          "description": "The non-adults of the household.",
+          "plural": "children"
+        }
+      }
+    },
+    "person": {
+      "description": "An individual. The minimal entity on which legislation can be applied.",
+      "documentation": "Variables like 'salary' and 'income_tax' are usually defined for the entity\n'Person'.\n\nUsage:\n    Calculate a variable applied to a 'Person' (e.g. access the 'salary' of\n    a specific month with person(\"salary\", \"2017-05\")).\n\nFor more information, see: https://openfisca.org/doc/coding-the-legislation/50_entities.html",
+      "plural": "persons"
+    }
+  }
+}

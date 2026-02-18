@@ -1,0 +1,19 @@
+{
+  "request": null,
+  "response": {
+    "defaultValue": 0,
+    "definitionPeriod": "MONTH",
+    "description": "Person's age (in years)",
+    "entity": "person",
+    "formulas": {
+      "0001-01-01": {
+        "content": "def formula(person, period, _parameters):\n    \"\"\"Person's age (in years).\n\n    A person's age is computed according to its birth date.\n    \"\"\"\n    birth = person(\"birth\", period)\n    birth_year = birth.astype(\"datetime64[Y]\").astype(int) + 1970\n    birth_month = birth.astype(\"datetime64[M]\").astype(int) % 12 + 1\n    birth_day = (birth - birth.astype(\"datetime64[M]\") + 1).astype(int)\n\n    is_birthday_past = (birth_month < period.start.month) + (\n        birth_month == period.start.month\n    ) * (birth_day <= period.start.day)\n\n    return (period.start.year - birth_year) - where(\n        is_birthday_past, 0, 1\n    )  # If the birthday is not passed this year, subtract one year\n",
+        "documentation": "Person's age (in years).\n\n        A person's age is computed according to its birth date.\n",
+        "source": "https://github.com/openfisca/country-template/blob/8.0.1/openfisca_country_template/variables/demographics.py#L39-L55"
+      }
+    },
+    "id": "age",
+    "source": "https://github.com/openfisca/country-template/blob/8.0.1/openfisca_country_template/variables/demographics.py#L32-L54",
+    "valueType": "Int"
+  }
+}

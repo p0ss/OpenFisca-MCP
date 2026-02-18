@@ -1,0 +1,45 @@
+{
+  "request": null,
+  "response": {
+    "benefits.basic_income": {
+      "description": "Amount of the basic income",
+      "href": "http://localhost:5050/parameter/benefits/basic_income"
+    },
+    "benefits.housing_allowance": {
+      "description": "Housing allowance amount (as a fraction of the rent)",
+      "href": "http://localhost:5050/parameter/benefits/housing_allowance"
+    },
+    "benefits.parenting_allowance.amount": {
+      "description": "Parenting allowance amount",
+      "href": "http://localhost:5050/parameter/benefits/parenting_allowance/amount"
+    },
+    "benefits.parenting_allowance.income_threshold": {
+      "description": "Parenting allowance income threshold",
+      "href": "http://localhost:5050/parameter/benefits/parenting_allowance/income_threshold"
+    },
+    "general.age_of_majority": {
+      "description": "Age of majority (in years)",
+      "href": "http://localhost:5050/parameter/general/age_of_majority"
+    },
+    "general.age_of_retirement": {
+      "description": "Age of retirement (in years). In French \u00e2ge de la retraite (en ann\u00e9es).",
+      "href": "http://localhost:5050/parameter/general/age_of_retirement"
+    },
+    "taxes.housing_tax.minimal_amount": {
+      "description": "Minimal amount due for the housing tax",
+      "href": "http://localhost:5050/parameter/taxes/housing_tax/minimal_amount"
+    },
+    "taxes.housing_tax.rate": {
+      "description": "Housing tax due per square meter.",
+      "href": "http://localhost:5050/parameter/taxes/housing_tax/rate"
+    },
+    "taxes.income_tax_rate": {
+      "description": "Income tax rate",
+      "href": "http://localhost:5050/parameter/taxes/income_tax_rate"
+    },
+    "taxes.social_security_contribution": {
+      "description": "Social security contribution tax scale",
+      "href": "http://localhost:5050/parameter/taxes/social_security_contribution"
+    }
+  }
+}

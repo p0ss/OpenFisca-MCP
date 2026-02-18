@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "openfisca-mcp"
+version = "0.1.0"
+description = "MCP tools for OpenFisca"
+authors = ["p0ss <possum.hodgkin@gmail.com>"]
+readme = "README.md"
+packages = [{include = "openfisca_mcp", from = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+openfisca-country-template = "^8.0.1"
+mcp = "^1.26.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = ">=8.3.3,<9.0"
+httpx = "^0.28.1"
+
+[tool.poetry.scripts]
+openfisca-mcp = "openfisca_mcp.server:run"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,22 @@
+{
+  "request": null,
+  "response": {
+    "defaultValue": 0,
+    "definitionPeriod": "MONTH",
+    "description": "Income tax",
+    "entity": "person",
+    "formulas": {
+      "0001-01-01": {
+        "content": "def formula(person, period, parameters):\n    \"\"\"Income tax.\n\n    The formula to compute the income tax for a given person at a given period\n    \"\"\"\n    return (\n        person(\"salary\", period)\n        + person(\"capital_returns\", period)\n        + person(\"pension\", period)\n    ) * parameters(period).taxes.income_tax_rate\n",
+        "documentation": "Income tax.\n\n        The formula to compute the income tax for a given person at a given period\n",
+        "source": "https://github.com/openfisca/country-template/blob/8.0.1/openfisca_country_template/variables/taxes.py#L28-L37"
+      }
+    },
+    "id": "income_tax",
+    "references": [
+      "https://law.gov.example/income_tax"
+    ],
+    "source": "https://github.com/openfisca/country-template/blob/8.0.1/openfisca_country_template/variables/taxes.py#L18-L36",
+    "valueType": "Float"
+  }
+}

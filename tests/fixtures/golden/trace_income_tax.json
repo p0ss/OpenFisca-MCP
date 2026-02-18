@@ -1,0 +1,108 @@
+{
+  "request": {
+    "persons": {
+      "alice": {
+        "birth": {
+          "ETERNITY": "1990-01-15"
+        },
+        "salary": {
+          "2024-01": 3000
+        },
+        "income_tax": {
+          "2024-01": null
+        }
+      }
+    },
+    "households": {
+      "household1": {
+        "adults": [
+          "alice"
+        ],
+        "rent": {
+          "2024-01": 800
+        }
+      }
+    }
+  },
+  "response": {
+    "entitiesDescription": {
+      "households": [
+        "household1"
+      ],
+      "persons": [
+        "alice"
+      ]
+    },
+    "requestedCalculations": [
+      "income_tax<2024-01>"
+    ],
+    "trace": {
+      "age<2024-01>": {
+        "calculation_time": 6.056e-05,
+        "dependencies": [
+          "birth<2024-01>"
+        ],
+        "formula_time": 5.46e-05,
+        "parameters": {},
+        "value": [
+          33
+        ]
+      },
+      "birth<2024-01>": {
+        "calculation_time": 5.96e-06,
+        "dependencies": [],
+        "formula_time": 5.96e-06,
+        "parameters": {},
+        "value": [
+          "Mon, 15 Jan 1990 00:00:00 GMT"
+        ]
+      },
+      "capital_returns<2024-01>": {
+        "calculation_time": 1.383e-05,
+        "dependencies": [],
+        "formula_time": 1.383e-05,
+        "parameters": {},
+        "value": [
+          0.0
+        ]
+      },
+      "income_tax<2024-01>": {
+        "calculation_time": 0.000226,
+        "dependencies": [
+          "salary<2024-01>",
+          "capital_returns<2024-01>",
+          "pension<2024-01>"
+        ],
+        "formula_time": 5.698e-05,
+        "parameters": {
+          "taxes.income_tax_rate<2024-01-01>": 0.15
+        },
+        "value": [
+          450.0000305175781
+        ]
+      },
+      "pension<2024-01>": {
+        "calculation_time": 0.0001493,
+        "dependencies": [
+          "age<2024-01>"
+        ],
+        "formula_time": 8.869e-05,
+        "parameters": {
+          "general.age_of_retirement<2024-01-01>": 62.0
+        },
+        "value": [
+          0.0
+        ]
+      },
+      "salary<2024-01>": {
+        "calculation_time": 5.96e-06,
+        "dependencies": [],
+        "formula_time": 5.96e-06,
+        "parameters": {},
+        "value": [
+          3000.0
+        ]
+      }
+    }
+  }
+}

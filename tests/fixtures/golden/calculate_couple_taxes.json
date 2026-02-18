@@ -1,0 +1,70 @@
+{
+  "request": {
+    "persons": {
+      "alice": {
+        "birth": {
+          "ETERNITY": "1985-03-20"
+        },
+        "salary": {
+          "2024-01": 4000
+        }
+      },
+      "bob": {
+        "birth": {
+          "ETERNITY": "1983-07-10"
+        },
+        "salary": {
+          "2024-01": 2500
+        }
+      }
+    },
+    "households": {
+      "household1": {
+        "adults": [
+          "alice",
+          "bob"
+        ],
+        "rent": {
+          "2024-01": 1200
+        },
+        "total_taxes": {
+          "2024-01": null
+        }
+      }
+    }
+  },
+  "response": {
+    "households": {
+      "household1": {
+        "adults": [
+          "alice",
+          "bob"
+        ],
+        "rent": {
+          "2024-01": 1200
+        },
+        "total_taxes": {
+          "2024-01": 1121.6666
+        }
+      }
+    },
+    "persons": {
+      "alice": {
+        "birth": {
+          "ETERNITY": "1985-03-20"
+        },
+        "salary": {
+          "2024-01": 4000
+        }
+      },
+      "bob": {
+        "birth": {
+          "ETERNITY": "1983-07-10"
+        },
+        "salary": {
+          "2024-01": 2500
+        }
+      }
+    }
+  }
+}

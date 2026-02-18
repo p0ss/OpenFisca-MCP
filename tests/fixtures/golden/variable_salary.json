@@ -1,0 +1,15 @@
+{
+  "request": null,
+  "response": {
+    "defaultValue": 0,
+    "definitionPeriod": "MONTH",
+    "description": "Salary",
+    "entity": "person",
+    "id": "salary",
+    "references": [
+      "https://law.gov.example/salary"
+    ],
+    "source": "https://github.com/openfisca/country-template/blob/8.0.1/openfisca_country_template/variables/income.py#L18-L26",
+    "valueType": "Float"
+  }
+}

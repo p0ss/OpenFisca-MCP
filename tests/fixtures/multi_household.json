@@ -1,0 +1,26 @@
+{
+  "persons": {
+    "alice": {
+      "birth": {"ETERNITY": "1990-01-15"},
+      "salary": {"2024-01": 3500}
+    },
+    "bob": {
+      "birth": {"ETERNITY": "1988-06-20"},
+      "salary": {"2024-01": 4500}
+    },
+    "charlie": {
+      "birth": {"ETERNITY": "1975-12-01"},
+      "salary": {"2024-01": 6000}
+    }
+  },
+  "households": {
+    "household1": {
+      "adults": ["alice"],
+      "rent": {"2024-01": 900}
+    },
+    "household2": {
+      "adults": ["bob", "charlie"],
+      "rent": {"2024-01": 1400}
+    }
+  }
+}

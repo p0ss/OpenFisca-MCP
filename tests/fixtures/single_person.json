@@ -1,0 +1,14 @@
+{
+  "persons": {
+    "alice": {
+      "birth": {"ETERNITY": "1990-01-15"},
+      "salary": {"2024-01": 3000}
+    }
+  },
+  "households": {
+    "household1": {
+      "adults": ["alice"],
+      "rent": {"2024-01": 800}
+    }
+  }
+}

@@ -485,17 +485,62 @@ async def handle_validate_situation(situation: dict[str, Any]) -> list[TextConte
 # =============================================================================
 
 
-async def main():
-    """Run the MCP server."""
+async def main_stdio():
+    """Run the MCP server over stdio."""
     async with stdio_server() as (read_stream, write_stream):
         await server.run(read_stream, write_stream, server.create_initialization_options())
 
 
-def run():
-    """Entry point for running the server."""
-    import asyncio
+def create_sse_app():
+    """Create a Starlette ASGI app with SSE transport for the MCP server."""
+    from starlette.applications import Starlette
+    from starlette.routing import Route
+    from starlette.responses import JSONResponse
+    from mcp.server.sse import SseServerTransport
 
-    asyncio.run(main())
+    sse_transport = SseServerTransport("/mcp/message")
+
+    async def handle_sse(request):
+        async with sse_transport.connect_sse(
+            request.scope, request.receive, request._send
+        ) as streams:
+            await server.run(
+                streams[0], streams[1], server.create_initialization_options()
+            )
+
+    async def handle_message(request):
+        await sse_transport.handle_post_message(
+            request.scope, request.receive, request._send
+        )
+
+    async def handle_health(request):
+        return JSONResponse({"status": "ok", "server": "openfisca-mcp"})
+
+    return Starlette(
+        routes=[
+            Route("/mcp/sse", endpoint=handle_sse),
+            Route("/mcp/message", endpoint=handle_message, methods=["POST"]),
+            Route("/health", endpoint=handle_health),
+        ],
+    )
+
+
+def run():
+    """Entry point for running the server. Uses OPENFISCA_MCP_TRANSPORT to select transport."""
+    import asyncio
+    import os
+
+    transport = os.getenv("OPENFISCA_MCP_TRANSPORT", "stdio")
+
+    if transport == "sse":
+        import uvicorn
+
+        host = os.getenv("OPENFISCA_MCP_HOST", "0.0.0.0")
+        port = int(os.getenv("OPENFISCA_MCP_PORT", "8080"))
+        app = create_sse_app()
+        uvicorn.run(app, host=host, port=port)
+    else:
+        asyncio.run(main_stdio())
 
 
 if __name__ == "__main__":

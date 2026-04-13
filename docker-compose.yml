@@ -1,0 +1,29 @@
+services:
+  openfisca-api:
+    build: .
+    command: api
+    environment:
+      - OPENFISCA_COUNTRY_PACKAGE=${OPENFISCA_COUNTRY_PACKAGE:-openfisca_country_template}
+      - OPENFISCA_API_PORT=5000
+      - OPENFISCA_API_WORKERS=3
+    ports:
+      - "${OPENFISCA_API_PORT:-5000}:5000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import httpx; httpx.get('http://localhost:5000/')"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+  openfisca-mcp:
+    build: .
+    command: mcp
+    environment:
+      - OPENFISCA_API_URL=http://openfisca-api:5000
+      - OPENFISCA_MCP_HOST=0.0.0.0
+      - OPENFISCA_MCP_PORT=8080
+    ports:
+      - "${OPENFISCA_MCP_PORT:-8080}:8080"
+    depends_on:
+      openfisca-api:
+        condition: service_healthy

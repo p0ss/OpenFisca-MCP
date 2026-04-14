@@ -30,6 +30,7 @@ RUN pip install --no-cache-dir .
 # Install country package from local directory (for packages not on PyPI)
 COPY country-packages/ country-packages/
 RUN if [ -n "$COUNTRY_PACKAGE_DIR" ] && [ -d "country-packages/$COUNTRY_PACKAGE_DIR" ]; then \
+      pip install --no-cache-dir setuptools && \
       pip install --no-cache-dir "./country-packages/$COUNTRY_PACKAGE_DIR"; \
     fi
 

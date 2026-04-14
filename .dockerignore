@@ -3,7 +3,6 @@ __pycache__
 *.pyc
 .git
 .pytest_cache
-country-packages
 country-template
 openfisca-core
 docs
@@ -11,3 +10,7 @@ tests
 project-plan.md
 *.md
 !README.md
+!country-packages/**/README.md
+country-packages/**/.git
+country-packages/**/tests
+country-packages/**/__pycache__

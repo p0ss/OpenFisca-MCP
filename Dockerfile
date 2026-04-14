@@ -2,6 +2,9 @@ FROM python:3.13-slim AS base
 
 WORKDIR /app
 
+# Country package to install (directory name under country-packages/, or empty to skip)
+ARG COUNTRY_PACKAGE_DIR=""
+
 # Install system deps for numpy/C extensions
 RUN apt-get update && \
     apt-get install -y --no-install-recommends gcc g++ && \
@@ -23,6 +26,12 @@ COPY src/ src/
 
 # Install the project itself
 RUN pip install --no-cache-dir .
+
+# Install country package from local directory (for packages not on PyPI)
+COPY country-packages/ country-packages/
+RUN if [ -n "$COUNTRY_PACKAGE_DIR" ] && [ -d "country-packages/$COUNTRY_PACKAGE_DIR" ]; then \
+      pip install --no-cache-dir "./country-packages/$COUNTRY_PACKAGE_DIR"; \
+    fi
 
 # Remove build toolchain to shrink image
 RUN apt-get purge -y gcc g++ && apt-get autoremove -y

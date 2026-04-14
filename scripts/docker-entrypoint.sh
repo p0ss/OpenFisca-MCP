@@ -7,11 +7,12 @@ API_WORKERS="${OPENFISCA_API_WORKERS:-3}"
 
 case "$1" in
   api)
+    # --bind is passed through to gunicorn (openfisca defaults to 127.0.0.1)
     exec openfisca serve \
       -c "$COUNTRY_PACKAGE" \
       -p "$API_PORT" \
       --workers "$API_WORKERS" \
-      --bind "0.0.0.0:$API_PORT"
+      -b "0.0.0.0:$API_PORT"
     ;;
   mcp)
     export OPENFISCA_MCP_TRANSPORT=sse

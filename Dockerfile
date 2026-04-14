@@ -30,8 +30,11 @@ RUN pip install --no-cache-dir .
 # Install country package from local directory (for packages not on PyPI)
 COPY country-packages/ country-packages/
 RUN pip install --no-cache-dir "setuptools<81" wheel
+# Install country package. Use --no-deps since openfisca-core, numpy, pandas
+# are already installed from the poetry lock. This avoids pip trying to
+# rebuild numpy from source with incompatible setuptools.
 RUN if [ -n "$COUNTRY_PACKAGE_DIR" ] && [ -d "country-packages/$COUNTRY_PACKAGE_DIR" ]; then \
-      pip install --no-cache-dir --no-build-isolation "./country-packages/$COUNTRY_PACKAGE_DIR"; \
+      pip install --no-cache-dir --no-build-isolation --no-deps "./country-packages/$COUNTRY_PACKAGE_DIR"; \
     fi
 
 # Remove build toolchain to shrink image

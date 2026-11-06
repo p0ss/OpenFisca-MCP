@@ -72,7 +72,7 @@ def test_session_and_tool_events_shape_and_privacy():
     assert start["payload"]["name"] == analytics.SESSION_START
     assert call["payload"]["name"] == analytics.TOOL_CALL
     data = call["payload"]["data"]
-    assert data["tool_calls_names"] == ["calculate"]
+    assert data["tool_calls_names"] == "calculate"
     assert data["outcome"] == "ok" and data["latency_ms"] == 12
     assert "error_class" not in data
     assert data["trace_id"] and data["trace_id"] == start["payload"]["data"]["trace_id"]
@@ -124,7 +124,7 @@ def test_error_outcome_and_unknown_tool_names():
     assert s.flush()
     bad, unknown = (json.loads(r.content)["payload"] for r in rec.requests)
     assert bad["data"]["error_class"] == "validation_error"
-    assert unknown["data"]["tool_calls_names"] == ["unknown"]
+    assert unknown["data"]["tool_calls_names"] == "unknown"
     assert "Alice" not in json.dumps(unknown)
 
 
@@ -177,8 +177,8 @@ def test_server_records_tool_calls_without_arguments(monkeypatch):
     bodies = [r.content.decode() for r in rec.requests]
     assert len(bodies) == 2
     first, second = (json.loads(b)["payload"]["data"] for b in bodies)
-    assert first["tool_calls_names"] == ["calculate"] and first["outcome"] == "validation_error"
-    assert second["tool_calls_names"] == ["unknown"] and second["outcome"] == "validation_error"
+    assert first["tool_calls_names"] == "calculate" and first["outcome"] == "validation_error"
+    assert second["tool_calls_names"] == "unknown" and second["outcome"] == "validation_error"
     for body in bodies:
         for secret in ("Alice", "4321", "salary", "households"):
             assert secret not in body

@@ -158,7 +158,8 @@ class LoomSink:
             data = {
                 "outcome": str(outcome)[:64],
                 "latency_ms": max(0, int(latency_ms)),
-                "tool_calls_names": [name],
+                # Comma-joined, as the Spindle sends lists and the collector parses them.
+                "tool_calls_names": name,
                 "tool_calls_count": 1,
             }
             if outcome != "ok":

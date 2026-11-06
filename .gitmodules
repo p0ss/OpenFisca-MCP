@@ -1,0 +1,12 @@
+[submodule "country-packages/openfisca-aotearoa"]
+	path = country-packages/openfisca-aotearoa
+	url = https://github.com/ServiceInnovationLab/openfisca-aotearoa.git
+[submodule "country-packages/openfisca-france"]
+	path = country-packages/openfisca-france
+	url = https://github.com/openfisca/openfisca-france.git
+[submodule "country-template"]
+	path = country-template
+	url = https://github.com/openfisca/country-template.git
+[submodule "openfisca-core"]
+	path = openfisca-core
+	url = https://github.com/openfisca/openfisca-core.git

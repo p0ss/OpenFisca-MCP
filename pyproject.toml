@@ -8,13 +8,15 @@ packages = [{include = "openfisca_mcp", from = "src"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-openfisca-country-template = "^8.0.1"
-mcp = "^1.26.0"
-openfisca-france = "^175.0.15"
+# The bridge only speaks HTTP to an OpenFisca Web API; it does not import
+# OpenFisca. Country packages are test/runtime fixtures, not bridge dependencies.
+mcp = "^1.30.0"
+httpx = "^0.28.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = ">=8.3.3,<9.0"
-httpx = "^0.28.1"
+openfisca-country-template = "^8.0.1"
+openfisca-france = "^175.0.15"
 
 [tool.poetry.scripts]
 openfisca-mcp = "openfisca_mcp.server:run"

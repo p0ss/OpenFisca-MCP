@@ -1,23 +1,25 @@
 services:
   openfisca-api:
-    build: .
-    command: api
+    build:
+      context: .
+      target: api
     environment:
-      - OPENFISCA_COUNTRY_PACKAGE=${OPENFISCA_COUNTRY_PACKAGE:-openfisca_country_template}
+      - OPENFISCA_COUNTRY_PACKAGE=${OPENFISCA_COUNTRY_PACKAGE:-openfisca_aotearoa}
       - OPENFISCA_API_PORT=5000
       - OPENFISCA_API_WORKERS=3
     ports:
       - "${OPENFISCA_API_PORT:-5000}:5000"
     healthcheck:
-      test: ["CMD", "python", "-c", "import httpx; httpx.get('http://localhost:5000/')"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/spec')"]
       interval: 10s
       timeout: 5s
       retries: 3
       start_period: 15s
 
   openfisca-mcp:
-    build: .
-    command: mcp
+    build:
+      context: .
+      target: mcp
     environment:
       - OPENFISCA_API_URL=http://openfisca-api:5000
       - OPENFISCA_MCP_HOST=0.0.0.0

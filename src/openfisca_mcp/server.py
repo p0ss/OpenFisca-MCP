@@ -4,18 +4,28 @@ Provides MCP tools for interacting with OpenFisca tax-benefit systems.
 """
 
 import json
+import time
 from typing import Any
 
 from mcp.server import Server
 from mcp.server.stdio import stdio_server
 from mcp.types import TextContent, Tool
 
+from .analytics import LoomSink, classify_result, headers_from_scope
 from .client import OpenFiscaClient
 from .errors import MCPError, NotFoundError, ValidationError
 
 # Initialize server and client
 server = Server("openfisca-mcp")
 client = OpenFiscaClient()
+# Optional usage events; a no-op unless LOOM_INGEST_URL and LOOM_TENANT are set.
+analytics = LoomSink.from_env()
+
+TOOL_NAMES = frozenset({
+    "list_entities", "list_variables", "describe_variable", "list_parameters",
+    "get_parameter", "search_variables", "calculate", "trace_calculation",
+    "validate_situation",
+})
 
 
 def format_result(data: Any) -> list[TextContent]:
@@ -248,9 +258,36 @@ Use this to catch errors before running a calculation.""",
 # =============================================================================
 
 
+def _request_headers() -> dict[str, str]:
+    """Headers of the HTTP request carrying the current MCP message, if any."""
+    try:
+        request = server.request_context.request
+        return {k.lower(): v for k, v in request.headers.items()} if request is not None else {}
+    except Exception:
+        return {}
+
+
 @server.call_tool()
 async def call_tool(name: str, arguments: dict[str, Any]) -> list[TextContent]:
-    """Handle tool calls."""
+    """Handle tool calls, recording name, outcome and latency only."""
+    started = time.perf_counter()
+    outcome = "internal_error"
+    try:
+        result = await dispatch_tool(name, arguments)
+        outcome = classify_result(result)
+        return result
+    finally:
+        # Never pass arguments or results: they can describe a person's circumstances.
+        analytics.tool_called(
+            name if name in TOOL_NAMES else "unknown",
+            outcome,
+            (time.perf_counter() - started) * 1000,
+            _request_headers(),
+        )
+
+
+async def dispatch_tool(name: str, arguments: dict[str, Any]) -> list[TextContent]:
+    """Route a tool call to its handler."""
     try:
         if name == "list_entities":
             return await handle_list_entities()
@@ -500,26 +537,28 @@ def create_sse_app():
 
     sse_transport = SseServerTransport("/mcp/message")
 
-    async def handle_sse(request):
-        async with sse_transport.connect_sse(
-            request.scope, request.receive, request._send
-        ) as streams:
-            await server.run(
-                streams[0], streams[1], server.create_initialization_options()
-            )
+    # The SDK transport sends its own responses, so these are raw ASGI
+    # applications rather than Starlette request endpoints (which must return a
+    # Response and would otherwise double-handle the reply).
+    class SSEEndpoint:
+        async def __call__(self, scope, receive, send):
+            analytics.session_started(headers_from_scope(scope))
+            async with sse_transport.connect_sse(scope, receive, send) as streams:
+                await server.run(
+                    streams[0], streams[1], server.create_initialization_options()
+                )
 
-    async def handle_message(request):
-        await sse_transport.handle_post_message(
-            request.scope, request.receive, request._send
-        )
+    class MessageEndpoint:
+        async def __call__(self, scope, receive, send):
+            await sse_transport.handle_post_message(scope, receive, send)
 
     async def handle_health(request):
         return JSONResponse({"status": "ok", "server": "openfisca-mcp"})
 
     return Starlette(
         routes=[
-            Route("/mcp/sse", endpoint=handle_sse),
-            Route("/mcp/message", endpoint=handle_message, methods=["POST"]),
+            Route("/mcp/sse", endpoint=SSEEndpoint()),
+            Route("/mcp/message", endpoint=MessageEndpoint(), methods=["POST"]),
             Route("/health", endpoint=handle_health),
         ],
     )

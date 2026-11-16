@@ -1,0 +1,6 @@
+# Build backend for installing this project and local country packages with
+# --no-build-isolation, so every build input is hash-verified.
+#   uv pip compile requirements/build.txt --python-version 3.13 --generate-hashes -o requirements/build.lock
+poetry-core==2.5.0
+setuptools==84.2.1
+wheel==0.48.0
